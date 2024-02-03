@@ -5,4 +5,4 @@
 
 ## Specifications
 
-- [v1](./SPECv1.md) - The first version of the SafeScript language specification. (February 2, 2024)
+- [v1](./SPECv1.md) - The first version of the SafeScript language specification. (February 2, 2024 INDEV)
