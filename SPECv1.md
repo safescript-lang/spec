@@ -126,7 +126,7 @@ Implementation Notes:
 
 - The `bool` type is to be implemented as a single byte, with the value `0` representing `false`,
 and the value `1` representing `true`. This is to ensure that the `bool` type is as efficient as possible.
-- Implementation is to have a look-up table attached to it.
+- Implementation is to have no look-up table attached to it.
 That means that `thenSome` and `then` are to be implemented as inline functions.
 
 #### `num`
