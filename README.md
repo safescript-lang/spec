@@ -1,6 +1,6 @@
 <div align="center">
 <h1>The SafeScript Language Specification</h1>
-<img id="logo" alt="logo" src="./.github/logo.png" width="100" height="100">
+<img id="logo" alt="logo" src="./logo.png" width="100" height="100">
 </div>
 
 ## Specifications

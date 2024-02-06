@@ -2,7 +2,7 @@
     <h1>The SafeScript Language Specification v1</h1>
     <p>This is the first version of the SafeScript language specification.</p>
     <p>Creation Date: February 2, 2024 (INDEV)</p>
-    <img id="logo" alt="logo" src="./.github/logo.png" width="100" height="100">
+    <img id="logo" alt="logo" src="./logo.png" width="100" height="100">
 </div>
 
 ## Table of Contents
