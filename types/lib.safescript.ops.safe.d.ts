@@ -10,85 +10,85 @@ declare global {
     export namespace core {
         export namespace ops {
             export interface Add<Rhs, Output> {
-                add(rhs: Rhs): Output;
+                add(this: this, rhs: Rhs): Output;
             }
             export interface AddAssign<Rhs> {
-                addAssign(rhs: Rhs): void;
+                addAssign(this: refmut<this>, rhs: Rhs): void;
             }
             export interface BitAnd<Rhs, Output> {
-                bitAnd(rhs: Rhs): Output;
+                bitAnd(this: this, rhs: Rhs): Output;
             }
             export interface BitAndAssign<Rhs> {
-                bitAndAssign(rhs: Rhs): void;
+                bitAndAssign(this: refmut<this>, rhs: Rhs): void;
             }
             export interface BitOr<Rhs, Output> {
-                bitOr(rhs: Rhs): Output;
+                bitOr(this: this, rhs: Rhs): Output;
             }
             export interface BitOrAssign<Rhs> {
                 bitOrAssign(rhs: Rhs): void;
             }
             export interface BitXor<Rhs, Output> {
-                bitXor(rhs: Rhs): Output;
+                bitXor(this: this, rhs: Rhs): Output;
             }
             export interface BitXorAssign<Rhs> {
-                bitXorAssign(rhs: Rhs): void;
+                bitXorAssign(this: refmut<this>, rhs: Rhs): void;
             }
             export interface Deref<Target> {
-                deref(): Target;
+                deref(this: ref<this>): ref<Target>;
             }
             export interface DerefMut<Target> {
-                derefMut(): Target;
+                derefMut(this: refmut<this>): refmut<Target>;
             }
             export interface Div<Rhs, Output> {
-                div(rhs: Rhs): Output;
+                div(this: this, rhs: Rhs): Output;
             }
             export interface DivAssign<Rhs> {
                 divAssign(rhs: Rhs): void;
             }
             export interface Index<Idx, Output> {
-                index(idx: Idx): Output;
+                index(this: ref<this>, idx: Idx): ref<Output>;
             }
             export interface IndexMut<Idx, Output> {
-                indexMut(idx: Idx): Output;
+                indexMut(this: refmut<this>, idx: Idx): refmut<Output>;
             }
             export interface Mul<Rhs, Output> {
-                mul(rhs: Rhs): Output;
+                mul(this: this, rhs: Rhs): Output;
             }
             export interface MulAssign<Rhs> {
-                mulAssign(rhs: Rhs): void;
+                mulAssign(this: refmut<this>, rhs: Rhs): void;
             }
             export interface Neg<Output> {
-                neg(): Output;
+                neg(this: this): Output;
             }
             export interface Not<Output> {
-                not(): Output;
+                not(this: this): Output;
             }
             export interface Rem<Rhs, Output> {
-                rem(rhs: Rhs): Output;
+                rem(this: this, rhs: Rhs): Output;
             }
             export interface RemAssign<Rhs> {
-                remAssign(rhs: Rhs): void;
+                remAssign(this: refmut<this>, rhs: Rhs): void;
             }
             export interface Shl<Rhs, Output> {
-                shl(rhs: Rhs): Output;
+                shl(this: this, rhs: Rhs): Output;
             }
             export interface ShlAssign<Rhs> {
-                shlAssign(rhs: Rhs): void;
+                shlAssign(this: refmut<this>, rhs: Rhs): void;
             }
             export interface Shr<Rhs, Output> {
-                shr(rhs: Rhs): Output;
+                shr(this: this, rhs: Rhs): Output;
             }
             export interface ShrAssign<Rhs> {
-                shrAssign(rhs: Rhs): void;
+                shrAssign(this: refmut<this>, rhs: Rhs): void;
             }
             export interface Sub<Rhs, Output> {
-                sub(rhs: Rhs): Output;
+                sub(this: this, rhs: Rhs): Output;
             }
             export interface SubAssign<Rhs> {
-                subAssign(rhs: Rhs): void;
+                subAssign(this: refmut<this>, rhs: Rhs): void;
             }
             export interface Fn<Args, Output> {
-                call(args: Args): Output;
+                call(this: ref<this>, args: Args): Output;
             }
         }
     }

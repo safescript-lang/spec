@@ -9,7 +9,16 @@ export interface __safescript_internals__ {
 declare global {
     export namespace core {
         export namespace fmt {
+            export interface Formatter {
 
+            }
+            export interface Display {
+                dsp(this: ref<this>, f: refmut<Formatter>): void;
+            }
+            export interface Debug {
+                dbg(this: ref<this>, f: refmut<Formatter>): void;
+            }
+            export function log(value: Display): void;
         }
     }
 }

@@ -2,7 +2,7 @@
     <h1>The SafeScript Language Specification v1</h1>
     <p>This is the first version of the SafeScript language specification.</p>
     <p>Creation Date: February 2, 2024 (INDEV)</p>
-    <img id="logo" alt="logo" src="./logo.png" width="100" height="100">
+    <img id="logo" alt="logo" src="./.github/logo.png" width="100" height="100">
 </div>
 
 ## Table of Contents
@@ -11,7 +11,7 @@
 - [Safety](#safety) - The safety features of SafeScript.
   - [No Nulls / No Null Pointers / No Undefineds](#no-nulls--no-null-pointers--no-undefineds) - Absence of nulls, null pointers and undefineds.
   - [No Exceptions](#no-exceptions) - How SafeScript does not have exceptions.
-  - [Unwraping](#unwrap) - The use of `unwrap` for both `Option` and `Result`.
+  - [Unwraping](#unwraping) - The use of `unwrap` for both `Option` and `Result`.
 - [Syntax](#syntax) - The syntax of SafeScript.
 - [Primitives](#primitives) - The primitive types of SafeScript.
   - [`bool`](#bool) - The boolean type.
@@ -37,13 +37,13 @@ The language is designed to be simple and easy to learn,
 as it is based off of TypeScript.
 
 The language is designed to be safe, thus it has no nulls, no undefineds,
-no exceptions and no runtime crashes (assuming no use of [`unwrap`](#unwrap)s).
+no exceptions and no runtime crashes (assuming no use of [`unwrap`](#unwraping)s).
 
 ### Safety
 
 SafeScript is designed to be safe, thus it has no nulls, no undefineds,
-no exceptions and no runtime crashes (assuming no use of [`unwrap`](#unwrap)s).
-This is achieved through the use of the [`Option`](#coreoption) and [`Result`](#coreresult)
+no exceptions and no runtime crashes (assuming no use of [`unwrap`](#unwraping)s).
+This is achieved through the use of the [`Option`](#coreehoption) and [`Result`](#coreehresult)
 types. The use of these types is encouraged, as it makes the code safer and
 easier to reason about.
 
@@ -51,7 +51,7 @@ easier to reason about.
 
 Due to the fact that nulls are the source of many bugs,
 SafeScript does not have nulls, undefineds or null pointers.
-Instead, it uses the [`Option`](#coreoption) type to represent a value that may or
+Instead, it uses the [`Option`](#coreehoption) type to represent a value that may or
 may not be present.
 
 Example:
@@ -68,8 +68,8 @@ but that does not mean that it does not have error handling.
 Many other languages, have syntax for throwing and catching exceptions.
 `try`, `catch`, `throw`, `raise`, `except`, `finally`, etc.
 SafeScript does not have any of that.
-Instead, SafeScript uses the [`Result`](#coreresult) type to represent a value that
-may or may not be an error. Similar to rust, the [`Result`](#coreresult) type has
+Instead, SafeScript uses the [`Result`](#coreehresult) type to represent a value that
+may or may not be an error. Similar to rust, the [`Result`](#coreehresult) type has
 two variants: `Ok` and `Err`.
 
 Example:
@@ -107,8 +107,8 @@ It can be either `true` or `false`.
 
 Methods:
 
-- `thenSome<T>(value: T) -> Option<T>` - If the boolean is `true`, returns `Some(value)`, otherwise returns `None`.
-- `then<T>(f: fn() -> T) -> Option<T>` - If the boolean is `true`, returns `Some` containing the result of invoking `f`, otherwise returns `None`.
+- `thenSome<T>(self, value: T) -> Option<T>` - If the boolean is `true`, returns `Some(value)`, otherwise returns `None`.
+- `then<T>(self, f: fn() -> T) -> Option<T>` - If the boolean is `true`, returns `Some` containing the result of invoking `f`, otherwise returns `None`.
 
 Trait Implementations:
 
@@ -187,6 +187,205 @@ It is re-exported in every SafeScript file, and can be accessed without the `cor
 It contains:
 
 - [`bool`](#bool)
+
+#### `core.eh`
+
+The `core.eh` contains the error handling types and functions.
+Such as [`Result`](#coreehresult) and [`Option`](#coreehoption).
+As well as the [`Error`](#corememerror) type.
+
+##### `core.eh.Result`
+
+The [`Result`](#coreehresult) type is a type that represents a value that may or may not be an error.
+This is used all over the place in SafeScript. Especially in IO operations.
+This is one of the ways that SafeScript can guarantee safety.
+
+Signature:
+
+```rust
+enum Result<O, E> {
+    Ok(O),
+    Err(E),
+}
+```
+
+Generics:
+
+- `O` - The type of the Ok value.
+- `E` - The type of the Err value.
+
+Methods:
+
+- `isOk(&self) -> bool` - Returns true if the result is a Ok value.
+- `isErr(&self) -> bool` - Returns true if the result is a Err value.
+- `ok(self) -> Option<O>` - If the result is a Ok value, returns a Some value with the inner value.
+  If the result is a Err value, returns a None value.
+- `err(self) -> Option<E>` - If the result is a Ok value, returns a None value.
+  If the result is a Err value, returns a Some value with the inner value.
+- `expect(self, msg: str) -> O` - Returns the inner value of the result.
+  Panics with `msg` if the result is a Err value.
+- `expectErr(self, msg: str) -> E` - Returns the inner value of the result.
+  Panics with `msg` if the result is a Ok value.
+- `unwrap(self) -> O` - Returns the inner value of the result.
+  Panics if the result is a Err value.
+- `unwrapErr(self) -> E` - Returns the inner value of the result.
+  Panics if the result is a Ok value.
+- `unwrapOr(self, backup: O) -> O` - Returns the inner value of the result if it is a Ok value.
+  If the result is a Err value, returns `backup`.
+- `unwrapOrElse(self, f: fn(E) -> O) -> O` - Returns the inner value of the result if it is a Ok value.
+  If the result is a Err value, invokes `f` with the inner value and returns the result of the invocation.
+- `map<U>(self, f: fn(O) -> U) -> Result<U, E>` - If the result is a Ok value,
+  returns a Ok value with the result of invoking `f` on the inner value.
+  If the result is a Err value, returns a Err value with the inner value.
+  Where `U` is the type of the new success value.
+- `mapErr<F>(self, f: fn(E) -> F) -> Result<O, F>` - If the result is a Ok value,
+  returns a Ok value with the inner value.
+  If the result is a Err value, returns a Err value with the result of invoking `f` on the inner value.
+  Where `F` is the type of the new error value.
+- `mapOr<U>(self, backup: U, f: fn(O) -> U) -> U` - If the result is a Ok value,
+  returns the result of invoking `f` on the inner value.
+  If the result is a Err value, returns `backup`.
+  Where `U` is the type of the new success value.
+- `mapOrElse<U>(self, backup: fn(E) -> U, f: fn(O) -> U) -> U` - If the result is a Ok value,
+  returns the result of invoking `f` on the inner value.
+  If the result is a Err value, returns the result of invoking `backup` on the inner value.
+  Where `U` is the type of the new success value.
+- `and<U>(self, other: Result<U, E>) -> Result<U, E>` - If the result is a Ok value, returns `other`.
+  If the result is a Err value, returns a Err value with the inner value.
+  Where `U` is the type of the new success value.
+- `andThen<U>(self, f: fn(O) -> Result<U, E>) -> Result<U, E>` - If the result is a Ok value,
+  returns the result of invoking `f` on the inner value.
+  If the result is a Err value, returns a Err value with the inner value.
+  Where `U` is the type of the new success value.
+- `or<F>(self, other: Result<O, F>) -> Result<O, F>` - If the result is a Ok value, returns the result.
+  If the result is a Err value, returns `other`.
+  Where `F` is the type of the new error value.
+- `orElse<F>(self, f: fn(E) -> Result<O, F>) -> Result<O, F>` - If the result is a Ok value, returns the result.
+  If the result is a Err value, returns the result of invoking `f` on the inner value.
+  Where `F` is the type of the new error value.
+
+##### `core.eh.Option`
+
+The [`Option`](#coreehoption) type is a type that represents a value that may or may not be present.
+It is supposed to be used in place of nulls, undefineds and null pointers.
+This is one of the ways that SafeScript can guarantee safety.
+
+Signature:
+
+```rust
+enum Option<T> {
+    Some(T),
+    None,
+}
+```
+
+Generics:
+
+- `T` - The type of the value.
+
+Methods:
+
+- `isSome(&self) -> bool` - Returns true if the option is a Some value.
+- `isNone(&self) -> bool` - Returns true if the option is a None value.
+- `expect(self, msg: str) -> T` - Returns the inner value of the option.
+  Panics with `msg` if the option is a None value.
+- `unwrap(self) -> T` - Returns the inner value of the option.
+  Panics if the option is a None value.
+- `unwrapOr(self, backup: T) -> T` - Returns the inner value of the option.
+  If the option is a None value, returns `backup`.
+- `unwrapOrElse(self, f: fn() -> T) -> T` - Returns the inner value of the option.
+  If the option is a None value, invokes `f` and returns the result of the invocation.
+- `map<U>(self, f: fn(T) -> U) -> Option<U>` - If the option is a Some value,
+  returns a Some value with the result of invoking `f` on the inner value.
+  If the option is a None value, returns a None value.
+- `mapOr<U>(self, backup: U, f: fn(T) -> U) -> U` - If the option is a Some value,
+  returns the result of invoking `f` on the inner value.
+  If the option is a None value, returns `backup`.
+- `mapOrElse<U>(self, backup: fn() -> U, f: fn(T) -> U) -> U` - If the option is a Some value,
+  returns the result of invoking `f` on the inner value.
+  If the option is a None value, returns the result of invoking `backup`.
+- `okOr<E>(self, err: E) -> Result<T, E>` - If the option is a Some value,
+  returns a Ok value with the inner value.
+  If the option is a None value, returns a Err value with `err`.
+- `okOrElse<E>(self, f: fn() -> E) -> Result<T, E>` - If the option is a Some value,
+  returns a Ok value with the inner value.
+  If the option is a None value, returns a Err value with the result of invoking `f`.
+- `and<U>(self, other: Option<U>) -> Option<U>` - If the option is a Some value, returns `other`.
+  If the option is a None value, returns a None value.
+- `andThen<U>(self, f: fn(T) -> Option<U>) -> Option<U>` - If the option is a Some value,
+  returns the result of invoking `f` on the inner value.
+  If the option is a None value, returns a None value.
+- `or(self, other: Option<T>) -> Option<T>` - If the option is a Some value, returns the option.
+  If the option is a None value, returns `other`.
+- `orElse(self, f: fn() -> Option<T>) -> Option<T>` - If the option is a Some value, returns the option.
+  If the option is a None value, returns the result of invoking `f`.
+- `xor(self, other: Option<T>) -> Option<T>` - If the option is a Some value, returns a None value.
+  If the option is a None value, returns `other`.
+`filter(self, f: fn(T) -> bool) -> Option<T>` - If the option is a Some value,
+  and invoking `f` on the inner value returns true, returns the option.
+  Otherwise, returns a None value.
+
+##### `core.eh.Error`
+
+The [`Error`](#coreeherror) is a trait that all error types should implement.
+Implementing this trait allows for better error handling and interoperability.
+And allows for the use of short-circuiting early returns.
+
+Example:
+
+```rust
+function read_file(path: str) -> Result<str, FileError> {
+    // Code here...
+}
+
+function main() -> Result<(), dyn Error> {
+    let contents = read_file("file.txt")?;
+    // With the Error trait, we can use the ? operator to short-circuit early returns.
+    // Otherwise, we would have to do this:
+    // let contents = match read_file("file.txt") {
+    //     Ok(contents) => contents,
+    //     Err(err) => return Err(err),
+    // };
+}
+```
+
+Signature:
+
+```rust
+trait Error: fmt.Debug + fmt.Display {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
+        None
+    }
+}
+```
+
+Methods:
+
+- `source(&self) -> Option<&(dyn Error + 'static)>` - Returns the underlying
+cause of this error, if any.
+(If the error is a wrapper around another error, this method should return the underlying error.)
+Should default to `None`.
+
+Trait Implementation Requirements:
+
+- `core.fmt.Debug` - All implementors of `Error` must also implement `Debug`.
+- `core.fmt.Display` - All implementors of `Error` must also implement `Display`.
+
+##### `core.eh.panic`
+
+The `panic` function is a function that is used to cause a runtime crash.
+You should **NEVER** use this function.
+For exception-like error handling, use the [`Result`](#coreehresult) type.
+
+Signature:
+
+```rust
+fn panic(msg: str) -> ! { }
+```
+
+Parameters:
+
+- `msg` - The message to display when the panic occurs.
 
 #### `core.mem`
 

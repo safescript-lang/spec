@@ -34,7 +34,23 @@ declare global {
             export type Error = Error.OutOfMemory | Error.InvalidPointer |
                 Error.InvalidSize | Error.InvalidAlignment | Error.BitConversionError;
             
-            export type Result<T> = core.result.Result<T, core.mem.Error>;
+            export type Result<T> = core.eh.Result<T, core.mem.Error>;
+
+            export type ref<T> = T & ops.Deref<T> & {
+                readonly __holder__: 'ref';
+            }
+
+            export type refmut<T> = T & ops.Deref<T> & ops.DerefMut<T> & {
+                readonly __holder__: 'ref' | 'refmut';
+            }
+
+            export type owned<T> = T & {
+                readonly __holder__: 'owned';
+            }
+
+            export type ownedmut<T> = T & {
+                readonly __holder__: 'owned' | 'ownedmut';
+            }
 
             /** The 8-bit unsigned integer type. */
             export interface u8 extends __safescript_internals__.Primitive<'u8'>,

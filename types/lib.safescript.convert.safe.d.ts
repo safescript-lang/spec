@@ -44,13 +44,13 @@ declare global {
              * @TRAIT
             */
             export interface Into<Posibilities> {
-                into<T extends Posibilities>(): T;
+                into<T extends Posibilities>(this: owned<this>): T;
             }
             /**
              * @TRAIT
             */
             export interface TryInto<T, Error> {
-                tryInto(): Result<T, Error>;
+                tryInto(this: owned<this>): Result<T, Error>;
             }
         }
     }

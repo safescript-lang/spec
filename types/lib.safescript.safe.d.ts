@@ -1,12 +1,11 @@
 /// <reference no-default-lib="true"/>
 /// <reference path="./lib.safescript.convert.safe.d.ts" />
+/// <reference path="./lib.safescript.eh.safe.d.ts" />
 /// <reference path="./lib.safescript.fmt.safe.d.ts" />
 /// <reference path="./lib.safescript.markers.safe.d.ts" />
 /// <reference path="./lib.safescript.mem.safe.d.ts" />
 /// <reference path="./lib.safescript.ops.safe.d.ts" />
-/// <reference path="./lib.safescript.option.safe.d.ts" />
 /// <reference path="./lib.safescript.primitives.safe.d.ts" />
-/// <reference path="./lib.safescript.result.safe.d.ts" />
 
 /** ## THIS IS NOT PART OF THE STANDARD LIBRARY */
 export interface __safescript_internals__ {
@@ -23,8 +22,48 @@ declare global {
      * This does not include any of the implementation details.
     */
     export namespace core {
-        export namespace fmt {
-
+        /** ## THIS IS NOT PART OF THE STANDARD LIBRARY */
+        export namespace __safescript_internals__ {
+            /**
+             * ## THIS IS NOT PART OF THE STANDARD LIBRARY
+             * This is used to help TypeScript easier infer the type of the value.
+            */
+            type Primitives = 'bool' | 'num' | 'str' | 'char' | 'void' |
+            'u8' | 'u16' | 'u32' | 'u64' | 'usize' |
+            'i8' | 'i16' | 'i32' | 'i64' | 'isize' |
+            'f32' | 'f64';
+            /**
+            * ## THIS IS NOT PART OF THE STANDARD LIBRARY
+            * This is used to help TypeScript easier infer the type of the value.
+            */
+            interface Primitive<P extends Primitives> {
+                /**
+                 * ## THIS IS NOT PART OF THE STANDARD LIBRARY
+                 * This is used to help TypeScript easier infer the type of the value.
+                */
+                readonly __type__: P;
+            }
+            /**
+             * ## THIS IS NOT PART OF THE STANDARD LIBRARY
+             * This is used to help TypeScript easier infer the type of the value.
+            */
+            type HolderType = 'ref' | 'refmut' | 'owned' | 'ownedmut';
+            /**
+             * ## THIS IS NOT PART OF THE STANDARD LIBRARY
+             * This is used to help TypeScript easier infer the type of the value.
+            */
+            interface ValueHolder<Type extends HolderType, T> {
+                /**
+                 * ## THIS IS NOT PART OF THE STANDARD LIBRARY
+                 * This is used to help TypeScript easier infer the type of the value.
+                */
+                readonly __holder__: Type;
+                /**
+                 * ## THIS IS NOT PART OF THE STANDARD LIBRARY
+                 * This is used to help TypeScript easier infer the type of the value.
+                */
+                readonly __value__: T;
+            }
         }
         /**
          * The prelude module. It re-exports the most used types and traits into the global scope.
@@ -33,6 +72,10 @@ declare global {
         */
         export namespace prelude {}
     }
+
+    export type ref<T> = core.mem.ref<T>;
+    export type refmut<T> = core.mem.refmut<T>;
+    export type owned<T> = core.mem.owned<T>;
 
     export type bool = core.prelude.bool;
     export type num = core.prelude.num;
@@ -64,7 +107,7 @@ declare global {
      * @param i js input
      * @returns SafeScript output
     */
-    function $<const P extends SSPrimitive>(i: JS2SS<P>): P;
+    function $<const P extends SSPrimitive>(i: JS2SS<P>): owned<P>;
 }
 
 /**
@@ -75,6 +118,13 @@ type SSPrimitive = bool | num | str | char |
     core.mem.u8 | core.mem.u16 | core.mem.u32 | core.mem.u64 | core.mem.usize |
     core.mem.i8 | core.mem.i16 | core.mem.i32 | core.mem.i64 | core.mem.isize |
     core.mem.f32 | core.mem.f64;
+
+type SSHolder<T extends core.__safescript_internals__.HolderType, V> =
+    T extends 'ref' ? core.mem.ref<V> :
+    T extends 'mut' ? core.mem.refmut<V> :
+    T extends 'owned' ? core.mem.owned<V> :
+    T extends 'ownedmut' ? core.mem.ownedmut<V> :
+    never;
 
 /**
  * ## THIS IS NOT PART OF THE STANDARD LIBRARY
