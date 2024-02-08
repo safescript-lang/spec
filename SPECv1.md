@@ -5,7 +5,7 @@
     <img id="logo" alt="logo" src="./logo.png" width="100" height="100">
 </div>
 
-## Table of Contents
+# Table of Contents
 
 - [Introduction](#introduction) - Introduction to the SafeScript language.
 - [Safety](#safety) - The safety features of SafeScript.
@@ -24,7 +24,7 @@
 - [Implementation Notes](./ImplementationNotes.md) - Notes on the implementation of SafeScript.
 - [FAQ](./FAQ.md) - Frequently asked questions about SafeScript.
 
-### Introduction
+## Introduction
 
 SafeScript is a morphic language (yes, I did make that word up).
 That means that it can be both compiled and interpreted (as well as embedded).
@@ -39,7 +39,7 @@ as it is based off of TypeScript.
 The language is designed to be safe, thus it has no nulls, no undefineds,
 no exceptions and no runtime crashes (assuming no use of [`unwrap`](#unwraping)s).
 
-### Safety
+## Safety
 
 SafeScript is designed to be safe, thus it has no nulls, no undefineds,
 no exceptions and no runtime crashes (assuming no use of [`unwrap`](#unwraping)s).
@@ -47,7 +47,7 @@ This is achieved through the use of the [`Option`](#coreehoption) and [`Result`]
 types. The use of these types is encouraged, as it makes the code safer and
 easier to reason about.
 
-#### No Nulls / No Null Pointers / No Undefineds
+### No Nulls / No Null Pointers / No Undefineds
 
 Due to the fact that nulls are the source of many bugs,
 SafeScript does not have nulls, undefineds or null pointers.
@@ -61,7 +61,7 @@ let x: Option<num> = Some(5);
 let y: Option<num> = None;
 ```
 
-#### No Exceptions
+### No Exceptions
 
 SafeScript does not have exceptions,
 but that does not mean that it does not have error handling.
@@ -79,7 +79,7 @@ let x: Result<num, str> = Ok(5);
 let y: Result<num, str> = Err("An error occurred");
 ```
 
-#### Unwraping
+### Unwraping
 
 The use of the `unwrap` method is discouraged in production code, or performance
 critical code, as it can lead to crashes, and can be slow. However, it is extremely
@@ -90,17 +90,17 @@ Essentially, `unwrap` is the only way to cause a runtime crash in SafeScript.
 Thus, if you do not use `unwrap`, you will not have any runtime crashes.
 Obviously, that is not always easy, but it is possible.
 
-### Syntax
+## Syntax
 
 <!-- TODO: Do Syntax in-depth -->
 
-### Primitives
+## Primitives
 
 SafeScript does not have many primitives, as it is designed to be simple.
 The primitives that it does have are: [`bool`](#bool), [`num`](#num), [`str`](#str),
 [`char`](#char), and [`void`](#void). They are all denoted in lowercase for simplicity.
 
-#### `bool`
+### `bool`
 
 The [`bool`](#bool) type is a primitive type that represents a boolean value.
 It can be either `true` or `false`.
@@ -129,29 +129,29 @@ and the value `1` representing `true`. This is to ensure that the `bool` type is
 - Implementation is to have no look-up table attached to it.
 That means that `thenSome` and `then` are to be implemented as inline functions.
 
-#### `num`
+### `num`
 
 The [`num`](#num) type is a primitive type that represents a number.
 It can be an integer or a floating point number, with arbitrary precision.
 (I will be using [Malachite](https://www.malachite.rs/))
 
-#### `str`
+### `str`
 
 The [`str`](#str) type is a primitive type that represents a sequence of characters.
 It is a UTF-8 encoded string. (Although the implementation can vary,
 it should **NOT** be a null-terminated string, for safety reasons.)
 
-#### `char`
+### `char`
 
 The [`char`](#char) type is a primitive type that represents a single character.
 It is a [Unicode scalar value](https://www.unicode.org/glossary/#unicode_scalar_value).
 
-#### `void`
+### `void`
 
 The [`void`](#void) type is a primitive type that represents the absence of a value.
 It is similar to the `void` type in TypeScript. Or the `unit` type in Rust.
 
-### Core
+## Core
 
 The standard library of SafeScript is called `core`.
 It contains the most basic types and functions.
@@ -180,7 +180,7 @@ let e: bool = true;
 let f: void;
 ```
 
-#### `core.prelude`
+### `core.prelude`
 
 The `core.prelude` module contains the most commonly used types and functions.
 It is re-exported in every SafeScript file, and can be accessed without the `core` namespace.
@@ -188,13 +188,13 @@ It contains:
 
 - [`bool`](#bool)
 
-#### `core.eh`
+### `core.eh`
 
 The `core.eh` contains the error handling types and functions.
 Such as [`Result`](#coreehresult) and [`Option`](#coreehoption).
 As well as the [`Error`](#corememerror) type.
 
-##### `core.eh.Result`
+#### `core.eh.Result`
 
 The [`Result`](#coreehresult) type is a type that represents a value that may or may not be an error.
 This is used all over the place in SafeScript. Especially in IO operations.
@@ -213,6 +213,16 @@ Generics:
 
 - `O` - The type of the Ok value.
 - `E` - The type of the Err value.
+
+Variants:
+
+##### `core.eh.Result.Ok`
+
+Represents a successful value.
+
+##### `core.eh.Result.Err`
+
+Represents an error value.
 
 Methods:
 
@@ -264,7 +274,7 @@ Methods:
   If the result is a Err value, returns the result of invoking `f` on the inner value.
   Where `F` is the type of the new error value.
 
-##### `core.eh.Option`
+#### `core.eh.Option`
 
 The [`Option`](#coreehoption) type is a type that represents a value that may or may not be present.
 It is supposed to be used in place of nulls, undefineds and null pointers.
@@ -298,23 +308,30 @@ Methods:
 - `map<U>(self, f: fn(T) -> U) -> Option<U>` - If the option is a Some value,
   returns a Some value with the result of invoking `f` on the inner value.
   If the option is a None value, returns a None value.
+  Where `U` is the type of the new value.
 - `mapOr<U>(self, backup: U, f: fn(T) -> U) -> U` - If the option is a Some value,
   returns the result of invoking `f` on the inner value.
   If the option is a None value, returns `backup`.
+  Where `U` is the type of the new value.
 - `mapOrElse<U>(self, backup: fn() -> U, f: fn(T) -> U) -> U` - If the option is a Some value,
   returns the result of invoking `f` on the inner value.
   If the option is a None value, returns the result of invoking `backup`.
+  Where `U` is the type of the new value.
 - `okOr<E>(self, err: E) -> Result<T, E>` - If the option is a Some value,
   returns a Ok value with the inner value.
   If the option is a None value, returns a Err value with `err`.
+  Where `E` is the type of the error value.
 - `okOrElse<E>(self, f: fn() -> E) -> Result<T, E>` - If the option is a Some value,
   returns a Ok value with the inner value.
   If the option is a None value, returns a Err value with the result of invoking `f`.
+  Where `E` is the type of the error value.
 - `and<U>(self, other: Option<U>) -> Option<U>` - If the option is a Some value, returns `other`.
   If the option is a None value, returns a None value.
+  Where `U` is the type of the new value.
 - `andThen<U>(self, f: fn(T) -> Option<U>) -> Option<U>` - If the option is a Some value,
   returns the result of invoking `f` on the inner value.
   If the option is a None value, returns a None value.
+  Where `U` is the type of the new value.
 - `or(self, other: Option<T>) -> Option<T>` - If the option is a Some value, returns the option.
   If the option is a None value, returns `other`.
 - `orElse(self, f: fn() -> Option<T>) -> Option<T>` - If the option is a Some value, returns the option.
@@ -325,7 +342,7 @@ Methods:
   and invoking `f` on the inner value returns true, returns the option.
   Otherwise, returns a None value.
 
-##### `core.eh.Error`
+#### `core.eh.Error`
 
 The [`Error`](#coreeherror) is a trait that all error types should implement.
 Implementing this trait allows for better error handling and interoperability.
@@ -371,7 +388,7 @@ Trait Implementation Requirements:
 - `core.fmt.Debug` - All implementors of `Error` must also implement `Debug`.
 - `core.fmt.Display` - All implementors of `Error` must also implement `Display`.
 
-##### `core.eh.panic`
+#### `core.eh.panic`
 
 The `panic` function is a function that is used to cause a runtime crash.
 You should **NEVER** use this function.
@@ -387,13 +404,13 @@ Parameters:
 
 - `msg` - The message to display when the panic occurs.
 
-#### `core.mem`
+### `core.mem`
 
 The `core.mem` module contains functions for finer control over memory (while still being safe).
 
 It contains things like [`Vec`](#corememvec)
 
-##### `core.mem.Error`
+#### `core.mem.Error`
 
 Signature:
 
@@ -409,27 +426,27 @@ enum Error {
 
 Variants:
 
-###### `core.mem.Error.OutOfMemory`
+##### `core.mem.Error.OutOfMemory`
 
 Indicates that the system is out of memory.
 
-###### `core.mem.Error.InvalidPointer`
+##### `core.mem.Error.InvalidPointer`
 
 Indicates that the pointer is invalid.
 
-###### `core.mem.Error.InvalidSize`
+##### `core.mem.Error.InvalidSize`
 
 Indicates that the size is invalid.
 
-###### `core.mem.Error.InvalidAlignment`
+##### `core.mem.Error.InvalidAlignment`
 
 Indicates that the alignment is invalid.
 
-###### `core.mem.Error.BitConversionError`
+##### `core.mem.Error.BitConversionError`
 
 Indicates that there was an error converting bits.
 
-##### `core.mem.Result`
+#### `core.mem.Result`
 
 A type alias for `core::Result<T, Error>`.
 Where `T` is the type of the value.
@@ -445,4 +462,4 @@ Generics:
 
 - `T` - The type of the value.
 
-##### `core.mem.Vec`
+#### `core.mem.Vec`
